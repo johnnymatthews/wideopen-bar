@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wide Open</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+        <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+        <script>
+            // Initialize the Ethers.js library
+            const provider = new ethers.providers.JsonRpcProvider('https://api.node.glif.io/rpc/v1');
+            const contractAddress = '0x0ac92C99394eaDdA617f2366dA986F0330BB4EdC';
+            const abi = [
+                {
+                    "inputs": [],
+                    "name": "getSpecial",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ];
+            const contract = new ethers.Contract(contractAddress, abi, provider);
+
+            // Call a function on the contract when the page loads
+            window.onload = async () => {
+                // Create a Loading notification.
+                const loadingParagraph = document.createElement('p');
+                loadingParagraph.innerHTML = 'Loading';
+                document.body.appendChild(loadingParagraph);
+
+                // Increase the loading bar with one . every second
+                // until we get a result from the network.
+                let loadingInterval = setInterval(() => {
+                    loadingParagraph.innerHTML += '.';
+                }, 1000);
+
+                // Wait until we've got a result from the network.
+                const result = await contract.getSpecial();
+
+                // Clear and hide the loading bar.
+                clearInterval(loadingInterval);
+                loadingParagraph.style.display = 'none';
+
+                // Output the result to a new <p> tag.
+                const resultParagraph = document.createElement('p');
+                resultParagraph.innerHTML = `Result: ${result}`;
+                document.body.appendChild(resultParagraph);
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Wide Open</h1>
+    </body>
+</html>
+
